@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v5.min.js" type="text/javascript"></script>
+</head>
+<style>
+  .wrapper {
+    display: flex;
+  }
+  .sidebar {
+    position: relative;
+    width: 30%;
+  }
+  .chart {
+    width: 70%;
+  }
+  .search-form {
+    margin-left: 60px;
+    margin-top: 20px;
+  }
+  .button-panel {
+    margin-left: 60px;
+    margin-top: 20px;
+  }
+  h1 {
+    margin-left: 60px;
+    color: black;
+  }
+  .panel, .panel-wrapperCOC {
+    position: absolute;
+    top: 260px;
+    left: 0px;
+    background-color: white;
+    border: 1px solid black;
+    width: 80%;
+    max-width: 350px;
+    height: 400px;
+    visibility: hidden;
+    padding: 8px;
+    margin-left: 60px;
+    margin-top: 10px;
+    z-index: 2;
+  }
+  /* Tables
+  ================================== */
+  table {
+      border-collapse: collapse;
+      border: 2px black solid;
+      font: 12px sans-serif;
+      width: 96%;
+      margin: 8px;
+  }
+  #table {
+      overflow-y: scroll;
+      height: 450px;
+  }
+  td {
+    border: 1px black solid;
+    text-align: center;
+  }
+  .Rtable {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 8px;
+  }
+  .Rtable-cell {
+    box-sizing: border-box;
+    flex-grow: 1;
+    width: 100%; 
+    padding: 4px;
+    overflow: hidden;
+    list-style: none;
+    border: 1px solid black;
+  }
+  .Rtable--2cols > .Rtable-cell-1  { width: 30%; }
+  .Rtable--2cols > .Rtable-cell-2  { width: 70%; }
+  .Rtable--3cols > .Rtable-cell  { width: 33.33%; }
+
+  .hide {
+      max-height: 0 !important;
+  }
+  /* Dropdown
+  ================================== */
+  .dropdown .title{
+    margin: .3em .3em .3em .3em;  
+    width: 100%;
+  }
+
+  .dropdown .title .fa-angle-right{
+    float: right;
+    margin-right: .7em;
+    transition: transform .3s;
+  }
+
+  .dropdown .menu{
+    transition: max-height .5s ease-out;
+    max-height: 50px;
+    overflow: scroll;
+  }
+
+  .dropdown .menu .option{
+    margin: .3em .3em .3em .3em;
+    margin-top: 0.3em;
+  }
+
+  .dropdown .menu .option:hover{
+    background: rgba(0,0,0,0.2);
+  }
+
+  .pointerCursor:hover{
+    cursor: pointer;
+  }
+
+  .rotate-90{
+    transform: rotate(90deg);
+  }
+
+  .arrow {
+    border: solid black;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px;
+    margin-left: 9px;
+  }
+
+  .down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+  }
+  .btn-legend {
+    opacity: 0;
+    cursor: pointer;
+  }
+</style>
+<body>
+  <div class="wrapper">
+    <div class='sidebar'>
+      <h1>Vorwerks Dynamogramm</h1>
+      <input type="text" size="30" class='search-form' placeholder='Search for an entity'>
+      <div class='button-panel'>
+        <button type="button" class='add-entity'>Add</button>
+        <button type="button" class='remove-entity'>Remove</button>
+        <span class='btn-legend'>Show Legend</span>
+      </div>
+      <div class='legend' style='position: relative;'></div>
+      <div class='panel'>
+        <h4 class='panel-header'></h4>
+        <div class="Rtable Rtable--2cols">
+          <div class="Rtable-cell Rtable-cell-1 panel-speaker">
+            <div class='dropdown'>
+              <div class='title pointerCursor'>Speaker <i class="arrow down"></i></div>
+              <div class='menu pointerCursor hide'>
+                <div class='option' id='option1'>Role 1</div>
+                <div class='option' id='option2'>Role 2</div>
+                <div class='option' id='option3'>Role 3</div>
+                <div class='option' id='option4'>Role 4</div>
+              </div>
+            </div>
+          </div>
+          <div class="Rtable-cell Rtable-cell-2"><input type="text" id="fname" name="fname" placeholder="Enter a name"></div>
+        </div>
+        <div class="panel-members" id='table'>
+        </div>
+      </div>
+      <div class='panel-wrapperCOC'>
+        <h4 class='panel-header'></h4>
+        <div class="Rtable Rtable--2cols">
+          <div class="Rtable-cell Rtable-cell-1">Lead CoC</div>
+          <div class="Rtable-cell Rtable-cell-2 panel-CoC">
+            <div class='dropdown'>
+              <div class='title pointerCursor'>Select a CoC <i class="arrow down"></i></div>
+              <div class='menu pointerCursor hide'>
+                <div class='option' id='option1'>HOME</div>
+                <div class='option' id='option2'>Engineering</div>
+                <div class='option' id='option3'>Global Enterprise IT</div>
+                <div class='option' id='option4'>Global Finance & Support</div>         
+                <div class='option' id='option5'>Global People & Culture</div>     
+                <div class='option' id='option6'>Portfolio Management</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="Rtable Rtable--2cols">
+          <div class="Rtable-cell Rtable-cell-1 panel-speaker-CCT">
+            <div class='dropdown'>
+              <div class='title pointerCursor'>Speaker <i class="arrow down"></i></div>
+              <div class='menu pointerCursor hide'>
+                <div class='option' id='option1'>Role 1</div>
+                <div class='option' id='option2'>Role 2</div>
+                <div class='option' id='option3'>Role 3</div>
+                <div class='option' id='option4'>Role 4</div>
+              </div>
+            </div>
+          </div>
+          <div class="Rtable-cell Rtable-cell-2"><input type="text" id="fname" name="fname" placeholder="Enter a name"></div>
+        </div>
+        <div class="panel-members" id='table'>
+        </div>
+      </div>
+    </div>
+    <div class='chart' style='position: relative;'></div>
+  </div>
+<script>
+//CT, ET, EG (info)
+let svg, prevId, prevName
+let data_flat = []
+let clicked = false
+let legendClicked = false
+const width = window.innerWidth * 0.8
+const height = window.innerHeight
+const donutData = [{'name': 'O', value: 1}, {'name': 'C', value: 1}, {'name': 'D', value: 1}, {'name': 'M', value: 1}, {'name': 'I', value: 1}]
+
+const color = d3.scaleOrdinal()
+  .domain([0, 1, 2, 3, 4])
+  .range(["ForestGreen", "springgreen", "MediumSeaGreen", "Gainsboro"])
+
+//////////////////// FORM ACTION ////////////////////
+function updateChart(input) {
+  console.log(input.value)
+}
+
+function addEntity(origJSON, data, category) {
+  let name_id = data.name.replace(/[^a-zA-Z ]/g, "")
+  let type = category === 'CCT' ? "oval" : "circle" 
+  origJSON.nodes.push({
+    "id": `${category}-${name_id}`,
+    "name": data.name, 
+    "type": type
+  })
+  return origJSON
+}
+
+function removeEntity(obj, id) {
+
+  const relevantNodes = Object.entries(obj.nodes) // converts each entry to [key, value]
+    .filter(([k, v]) => v.id !== id) // define the criteria to include/exclude items
+    .reduce((acc, [k, v]) => {
+      acc[k] = v;
+      return acc; // this function can be improved, it converts the [[k, v]] back to {k: v, k: v, ...}
+    }, {});
+
+  const relevantLinks = Object.entries(obj.links) // converts each entry to [key, value]
+    .filter(([k, v]) => v.start_id !== id && v.end_id !== id ) // define the criteria to include/exclude items
+    .reduce((acc, [k, v]) => {
+      acc[k] = v;
+      return acc; // this function can be improved, it converts the [[k, v]] back to {k: v, k: v, ...}
+    }, {});
+
+  return { nodes: Object.values(relevantNodes), links: Object.values(relevantLinks) }
+
+}
+
+
+function onlyUnique(value, index, self) { 
+    return self.indexOf(value) === index;
+}
+
+const drag = simulation => {
+  
+  function dragstarted(d) {
+    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+  
+  function dragged(d) {
+    d.fx = d3.event.x;
+    d.fy = d3.event.y;
+  }
+  
+  function dragended(d) {
+    if (!d3.event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+  
+  return d3.drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended);
+}  
+
+function getTruncated(d) {
+  if (d.length > 20){
+    return d.split("&")[0]
+  } else {
+    return d
+  }
+}
+
+
+d3.json('network_actual.json')
+  .then(function(data) {
+
+    let dataOrig = JSON.parse(JSON.stringify(data))
+
+    //////////////////////////////////////// DRAW CONTAINER ELEMENTS ////////////////////////////////////////
+    svg = d3.select('.chart')
+      .append('svg')
+      .attr('class', 'chart-svg')
+      .style("background", "white")
+      .attr("width", width)
+      .attr("height", height*1.3)
+
+    d3.select('.chart').on('click', function(){
+        d3.select('#table table').remove()
+        d3.select('.panel').style('visibility', 'hidden')  
+      })
+
+    const g = svg.append('g')
+      .attr("transform", "translate(" + width/6 + "," + width/8 + ")")
+
+    var outer_dim = width/2
+    var outer_arc = g.append("path")
+        .attr("d", "M 0, "+(outer_dim/2+0)+" a "+outer_dim/2+","+outer_dim/2+" 0 1,0 "+outer_dim+",0 a "+outer_dim/2+","+outer_dim/2+" 0 1,0 "+outer_dim*-1+",0")
+        .style('fill', 'transparent')
+
+    var dim = width/5
+    var inner_arc = g.append("path")
+        .attr("d", "M" + (outer_dim-dim)/2  + ", " +(dim/2+(outer_dim-dim)/2 )+" a "+dim/2+","+dim/2+" 0 1,0 "+dim+",0 a "+dim/2+","+dim/2+" 0 1,0 "+dim*-1+",0")
+        .style('fill', 'transparent')
+
+    // evenly spaces nodes along arc
+    const circleCoord = function(circle, node, index, num_nodes){
+        var circumference = circle.node().getTotalLength();
+        var pointAtLength = function(l){return circle.node().getPointAtLength(l)};
+        var sectionLength = (circumference)/num_nodes;
+        var position = sectionLength*index+sectionLength;
+        return pointAtLength(circumference-position)
+    }
+
+    //////////////////////////////////////// DRAW COMMUNITY ARC LABELS ////////////////////////////////////////
+    //Turn the pie chart 90 degrees counter clockwise, so it starts at the left
+    const pie = d3.pie()
+        .startAngle(-90 * Math.PI/180)
+        .endAngle(-90 * Math.PI/180 + 2*Math.PI)
+        .value(function(d) { return d.value; })
+        .padAngle(.01)
+        .sort(null);
+    
+    const arc = d3.arc()
+      .outerRadius(outer_dim/2 + 50)
+      .innerRadius(outer_dim/2);
+    
+    // const donut = g.append("g")
+    //   .attr('transform', `translate(${outer_dim/2}, ${outer_dim/2})`)
+            
+    // //Create the donut slices and also the invisible arcs for the text 
+    // donut.selectAll(".donutArcSlices")
+    //     .data(pie(donutData))
+    //     .enter().append("path")
+    //     .attr("class", "donutArcSlices")
+    //     .attr("d", arc)
+    //     .style("fill", 'none')
+    //     .each(function(d,i) {
+    //         //A regular expression that captures all in between the start of a string
+    //         //(denoted by ^) and the first capital letter L
+    //         var firstArcSection = /(^.+?)L/;
+
+    //         //The [1] gives back the expression between the () (thus not the L as well)
+    //         //which is exactly the arc statement
+    //         var newArc = firstArcSection.exec( d3.select(this).attr("d") )[1];
+    //         //Replace all the comma's so that IE can handle it -_-
+    //         //The g after the / is a modifier that "find all matches rather than
+    //         //stopping after the first match"
+    //         newArc = newArc.replace(/,/g , " ");
+
+    //         //Create a new invisible arc that the text can flow along
+    //         svg.append("path")
+    //             .attr("class", "hiddenDonutArcs")
+    //             .attr("id", "donutArc"+i)
+    //             .attr("d", newArc)
+    //             .style("fill", "none");
+    //     });
+
+    // //Append the label names on the outside
+    // donut.selectAll(".donutText")
+    //     .data(donutData)
+    //    .enter().append("text")
+    //     .attr("class", "donutText")
+    //     .attr('font-size', '20px')
+    //     .attr("dy", -13)
+    //    .append("textPath")
+    //     .attr("startOffset","50%")
+    //     .style("text-anchor","middle")
+    //     .attr("xlink:href",function(d,i){return "#donutArc"+i;})
+    //     .text(function(d){return d.name;});
+  
+    //////////////////// DRAW LEGEND ////////////////////
+    const legend = d3.select('.legend')
+      .append('svg')
+      .attr('class', 'legend-svg')
+      .style("background", "white")
+      .attr('width', 430)
+      .attr('height', 500)
+      .style('z-index', 1)
+      .append('g')
+        .attr('transform', 'translate(100, 0)')
+
+    legend.append("circle")
+      .attr("transform", "translate(0,120)")
+      .attr('r', 40)
+      .attr("fill", color(0))
+   
+    legend.append("circle")
+      .attr("transform", "translate(0,200)")
+      .attr('r', 20)
+      .attr("fill", color(1))
+    
+    legend.append("circle")
+      .attr("transform", "translate(0,250)")
+      .attr('r', 20)
+      .attr("fill", color(2))
+   
+    legend.append("circle")
+      .attr("transform", "translate(0,300)")
+      .attr('r', 20)
+      .attr("fill", color(3))
+    
+    legend.append("ellipse")
+      .attr("transform", "translate(0,350)")
+      .attr("rx", 30)
+      .attr("ry", 20)
+      .attr("fill", 'white')
+      .attr("stroke", color(0))
+      .attr("stroke-width", "2px")
+   
+     legend.append("text")
+      .attr('font-size', '12px')
+      .attr("transform", "translate(60,120)")
+      .text("Center of Competence (CoC)")
+   
+    legend.append("text")
+      .attr('font-size', '12px')
+      .attr("transform", "translate(35,200)")
+      .text("Competence Team (mono-competent)")
+   
+    legend.append("text")
+      .attr('font-size', '12px')
+      .attr("transform", "translate(35,250)")
+      .text("Expert Team (mono-competent)")
+    
+    legend.append("text")
+      .attr('font-size', '12px')
+      .attr("transform", "translate(35,300)")
+      .text("Expert Group (mono-competent)")
+    
+    legend.append("text")
+      .attr('font-size', '10px')
+      .attr("transform", "translate(35,350)")
+      .text("Cross-Competence Team, permanent and temporarily")
+
+    updateGraph(JSON.parse(JSON.stringify(data)))  
+
+    function updateGraph(data){
+
+      svg.on("click", function(d){ 
+        return zoom(d, d3.select(this)) 
+      })
+
+      const innerCircle = data.nodes.filter(d=>d.type === 'inner-circle')
+      const outerCircle = data.nodes.filter(d=>d.type === 'circle' & d.id !== 'exec')
+      let innerCircleList = innerCircle.map(d=>d.name)
+      let outerCircleList = outerCircle.map(d=>d.name)   
+      const innerCircleNum = innerCircle.length
+      const outerCircleNum = outerCircle.length
+      const ovalsNum = data.nodes.filter(d=>d.type === 'oval').length
+
+      const MAX_RADIUS = innerCircleNum === 0 ? outer_dim/7.2 : (ovalsNum > 15 ? outer_dim/11 : outerCircleNum > 6 ? outer_dim/11 : outer_dim/9.2)
+      const innerNodeRadiusScale = d3.scaleSqrt().domain([0, 5]).range([(MAX_RADIUS * 0.5)/5, MAX_RADIUS * 0.5])
+      const outerNodeRadiusScale = d3.scaleSqrt().domain([0, 5]).range([MAX_RADIUS/5, MAX_RADIUS])
+      const radiusAccessor = (d) => d.id === 'exec' ? innerNodeRadiusScale(d.value) : outerNodeRadiusScale(d.value)
+
+      function getFixedCoordinates(d, i){
+        if(d.id === 'exec'){
+          return { x: outer_dim/2, y: outer_dim/2 }
+        } else if(d.type === "inner-circle"){
+          let inner_coord = circleCoord(inner_arc, d, i, innerCircleNum) // CHANGE
+          return { x: inner_coord.x, y: inner_coord.y }
+        } else if(d.type === 'circle'){
+          let outer_coord = circleCoord(outer_arc, d, i, outerCircleNum) // CHANGE
+          return { x: outer_coord.x, y: outer_coord.y }
+        } else {
+          return { x: null, y: null }
+        }
+      }
+
+      // check if any CoC bubble share links and place both side by side
+      let linkGrps = d3.nest()
+        .key(d=>d.start_id)
+        .entries(data.links)
+
+      let CoC_pairs = []
+      let CT_pairs = []
+      linkGrps.forEach((d,i) => {
+        let targets = d.values.map(d=>d.end_id)
+        let CoC_names = []
+        let CT_names = []
+        targets.forEach(t=>{
+          if(t.substring(0,3) === 'CoC'){
+            CoC_names.push(data['nodes'].find(el=>el.id === t).name)
+          } else {
+            CT_names.push(data['nodes'].find(el=>el.id === t).name)
+          }
+        })
+        CoC_names = CoC_names.sort((a, b) => d3.ascending(b.toLowerCase(), a.toLowerCase()))
+        CT_names = CT_names.sort((a, b) => d3.ascending(b.toLowerCase(), a.toLowerCase()))
+        let CoC_includes = CoC_pairs.some(a => CoC_names.every((v, i) => v === a[i]))
+        let CT_includes = CT_pairs.some(a => CT_names.every((v, i) => v === a[i]))
+        if(CoC_names.length === 2 && !CoC_includes){
+          CoC_pairs.push(CoC_names)
+        }
+        if(CT_names.length === 2 && !CT_includes){
+          CT_pairs.push(CT_names)
+        }
+      })
+
+      CoC_pairs = CoC_pairs.flat().filter(onlyUnique)
+      CT_pairs = CT_pairs.flat().filter(onlyUnique)
+
+      innerCircleList = innerCircleList.sort((a, b) => d3.ascending(b.toLowerCase(), a.toLowerCase()))
+      innerCircleList = innerCircleList.sort((a, b) => CT_pairs.indexOf(b) - CT_pairs.indexOf(a))
+      outerCircleList = outerCircleList.sort((a, b) => d3.ascending(b.toLowerCase(), a.toLowerCase()))
+      outerCircleList = outerCircleList.sort((a, b) => CoC_pairs.indexOf(b) - CoC_pairs.indexOf(a))
+
+      data.nodes = data.nodes.sort((a, b) => outerCircleList.indexOf(b.name) - outerCircleList.indexOf(a.name))
+      data.nodes = data.nodes.sort((a, b) => innerCircleList.indexOf(b.name) - innerCircleList.indexOf(a.name))
+
+      data.nodes.forEach((d,i)=>{
+        if(innerCircleList.indexOf(d.name) !== -1){
+          d.index = innerCircleList.indexOf(d.name)
+        } else if(outerCircleList.indexOf(d.name) !== -1){
+          d.index = outerCircleList.indexOf(d.name)
+        } else {
+          d.index = 0
+        }
+      })
+
+      let outer_poly = []
+      let inner_poly = []
+      data['nodes'].forEach((d,i)=>{
+        let PARENT = d.id
+        let index = d.index
+        let coords = getFixedCoordinates(d, index)
+        d.groupId = PARENT
+        d.level = 1
+        d.fx = coords.x
+        d.fy = coords.y 
+        if(d.type === "inner-circle"){
+          inner_poly.push({x: coords.x, y: coords.y})
+        }
+        if(d.type === "circle" & d.id !== 'exec'){
+          outer_poly.push({x: coords.x, y: coords.y})
+        }
+        let sum = d3.hierarchy(d).sum(el => el.value).value
+        d.value = d.type === 'oval' ? 1 : (d.type === 'inner-circle' ? sum / 1.5 : (sum <= 4 ? (sum+1) * 2 : sum+1))
+        data_flat.push(d)
+        d.truncated_name = getTruncated(d.name)
+        d.children && d.children.forEach(el=>{
+            el.truncated_name = getTruncated(el.name)
+            el.groupId = PARENT
+            el.level = 2
+            el.value = el.children ? el.children.length : 5
+            data_flat.push(el)
+            el.children && el.children.forEach(el1=>{
+              el1.truncated_name = getTruncated(el1.name)
+              el1.groupId = PARENT
+              el1.level = 3
+              el1.value = el1.children ? el1.children.length : 1
+              data_flat.push(el1)
+              el1.children && el1.children.forEach(el2=>{
+                el2.truncated_name = getTruncated(el2.name)
+                el2.groupId = PARENT
+                el2.level = 4
+                el2.value = 1
+                el2.value = el2.children ? el2.children.length : 1
+                data_flat.push(el2)
+              })
+            })
+        })
+      })
+
+      const links = data.links.map(d =>d);
+      const nodes = data.nodes.map(d =>d);
+
+      const simulation = d3.forceSimulation(nodes)
+          .force("link", d3.forceLink(links).id(d => d.id)
+           .strength(0.4)
+           .distance(function(d,i){
+              if(d.type === "outer"){
+                return 240
+              } else if (d.type === "outer-oval"){
+                return 240
+              } else if (d.type === 'cct-coc' | d.type === 'cct-ct'){
+                return 60
+              } else {
+                return 120
+              }
+           }))
+          .force("charge", d3.forceManyBody().strength(-10))
+          .force("collide", d3.forceCollide(function (d) { 
+            if(d.type === 'oval'){
+              return radiusAccessor(d)*1.5
+            } else if(d.type === 'inner-circle'){
+              return radiusAccessor(d) * 1.2
+            } else {
+              return radiusAccessor(d)*1.1
+            }
+          }))
+          //.force("center", d3.forceCenter(width / 2, height / 2));
+             
+      //////////////////////////////////////// DRAW GRAPH ELEMENTS //////////////////////////////////////// 
+      // draw lines for all edge types
+      // but only make visible edges between 'Center-of-Competence' and 'Competence Team' circles
+      const link = g
+        .selectAll("line") 
+        .data(links)
+        .join("line")
+          .attr("class", d => d.source.id === 'exec' ? 'exec-source' : 'edge')
+          .attr("stroke", "navy")
+          .attr("stroke-width", "2px")
+          .attr("stroke-opacity", 0)
+          //.attr("stroke-opacity", d => (d.type === 'cct-coc' | d.type === 'cct-ct') ? 0 : 1)
+
+      g.selectAll("polygon.outer-poly")
+        .data([outer_poly])
+        .join("polygon")
+          .transition().duration(300)
+          .attr('class', 'outer-poly')
+          .attr("points",function(d) { 
+              return d.map(function(d) {
+                  return [d.x,d.y].join(",");
+              }).join(" ");
+          })
+          .attr("fill", "transparent")
+          .attr("stroke","navy")
+          .attr("stroke-dasharray",4)
+          .attr("stroke-width",2);
+
+      g.selectAll("polygon.inner-poly")
+        .data([inner_poly])
+        .join("polygon")
+          .transition().duration(300)
+          .attr('class', 'inner-poly')
+          .attr("points",function(d) { 
+              return d.map(function(d) {
+                  return [d.x,d.y].join(",");
+              }).join(" ");
+          })
+          .attr("fill", "transparent")
+          .attr("stroke","navy")
+          .attr("stroke-dasharray",4)
+          .attr("stroke-width",2);
+
+      // draw group element (acts as a wrapper to nest more elements inside) for all node types
+      const nodeG = g.append("g")
+        .attr('class', 'nodesWrapper')
+        .selectAll("g")
+          .data(nodes)
+          .join("g")
+          .attr('class', d => d.type)
+          //.call(drag(simulation))
+    
+     // draw ovals for 'Cross Competence Team' nodes
+      nodeG.filter(d => d.type === 'oval')
+        .append('ellipse')
+        .attr("id", d => d.id) // tag each entity by its unique ID
+        .attr("class", d=>d.groupId) // 
+        .attr("rx", d => radiusAccessor(d) * 1.25)
+        .attr("ry", d => radiusAccessor(d) * 0.75)
+        .attr("fill", d => d.id === 'NEATO' ? 'CornflowerBlue' : 'white')
+        .attr("stroke", d => d.id === 'NEATO' ? 'CornflowerBlue' : color(2))
+        .attr("stroke-width", "2px")
+     
+      // draw circles for 'Center of Competence' and 'Competence Team' nodes
+     nodeG.filter(d => d.type === 'circle' | d.type === 'inner-circle')
+        .append('circle')
+        .attr("id", d => d.id)
+        .attr("class", d => d.groupId)
+        .attr("r", d => radiusAccessor(d))
+        .attr("fill", d => d.id === 'exec' ? "navy" : (d.type === 'inner-circle' ? color(1) : color(0)))
+     
+     // for 'Center of Competence' nodes only, execute circle packing
+     nodeG.append('g')
+        .filter(d => d.type === 'circle' | d.type === 'inner-circle')
+        .each(function (d) {
+          drawHexagons(
+            d3.select(this),
+            d,
+            { 
+              width: radiusAccessor(d)*2,
+              height: radiusAccessor(d)*2 
+            }
+          )
+        })
+      
+    // for 'exec', 'Cross Competence Team' and 'Competence Team' nodes, append label 
+    // Note: this does not append labels for nested circles
+    nodeG.append('text')
+      .filter(d=>(d.type === 'inner-circle' && !d.children) | d.type === 'oval' | (d.type ==='circle' && !d.children))
+      .attr('class', 'outer-labels')
+      .attr("id", d => d.id)
+      .style("fill", d => d.id === 'exec' ? "white" : "black")
+      .attr("font-size", d => d.name.length > 30 ? "0.5em" : "0.7em")
+      .attr("font-weight", d=> (d.type ==='circle' && !d.children) ? "bold" : "normal")
+      .attr("text-anchor", "middle")
+      .attr("alignment-baseline", "middle")
+      .attr('pointer-events', 'none') // ensure text labels are not blocking circles from being hovered upon
+      //.attr("dy", d => -radiusAccessor(d)-8) // labels are always placed centralized within circle use 'dy' attribute to adjust it
+      .attr("y", 0)
+      .attr("dy", d => {
+        if(d.name.length > 30){
+          return -1.5
+        } else if(d.name.length > 18){
+          return -0.5
+        } else {
+          return 0
+        }
+       })
+      .attr('opacity', 1)
+      .text(d=> d.name)
+      .call(wrap, 65)
+
+    nodeG.append('text')
+      .filter(d=>(d.type ==='circle' && d.children) || (d.type === 'inner-circle' && d.children))
+      .attr('class', 'header-labels')
+      .attr("id", d => d.id)
+      .style("fill", "black")
+      .attr("font-size", "0.7em")
+      .attr("text-anchor", "middle")
+      .attr("alignment-baseline", "middle")
+      .attr('pointer-events', 'none') // ensure text labels are not blocking circles from being hovered upon
+      //.attr("dy", d => -radiusAccessor(d)-8) // labels are always placed centralized within circle use 'dy' attribute to adjust it
+      .attr("y", 0)
+      .attr("dy", d => {
+        if(d.name.length > 30){
+          return -1.5
+        } else if(d.name.length > 18){
+          return -0.5
+        } else {
+          return 0
+        }
+       })
+      .attr('opacity', 0)
+      .text(d=> d.name)
+      .call(wrap, 65)
+
+    // however, on zoom, we want to show the full text label of 'Competence Team' nodes instead of abbreviations
+    nodeG.append('text')
+      .filter(d => !d.children)
+      .attr('class', 'zoom-outer-labels')
+      .style("fill", "black")
+      .attr("font-size", "0.25em")
+      .attr("text-anchor", "middle")
+      .attr("alignment-baseline", "middle")
+      .attr('pointer-events', 'none') 
+      .attr("opacity", 0) // do not make the label visible initially
+      .text(d=> d.name)
+    
+    //////////////////////////////////////// UPDATE ELEMENT POSITIONS ////////////////////////////////
+    simulation.on("tick", () => {
+      link
+          //.attr("x1", d => d.source.id === "exec" ? width/2 : d.source.x) // fix the 'exec' team node in center of container
+          //.attr("y1", d => d.source.id === "exec" ? height/2: d.source.y)
+          .attr("x1", d => d.source.x)
+          .attr("y1", d => d.source.y)
+          .attr("x2", d => d.target.x)
+          .attr("y2", d => d.target.y);
+
+     //nodeG.attr("transform", d => `translate(${d.id === "exec" ? width/2 : d.x}, ${d.id === "exec" ? height/2 : d.y})`)
+      nodeG.attr("transform", d => {
+        return `translate(${d.x}, ${d.y})`
+        //let r = radiusAccessor(d) * 2
+        //return `translate(${Math.max(-r, Math.min(width, d.x))}, ${Math.max(-r, Math.min(height, d.y))})`
+      })
+      
+    });
+
+    //////////////////////////////////////// INTERACTIVITY //////////////////////////////////////// 
+    // all mouseover events
+    svg.selectAll('.oval')
+      .attr('cursor', 'pointer')
+      .on("mouseover", d => mouseover(d))
+      .on("mouseleave", () => mouseleave())
+
+    svg.selectAll('circle')
+      //.filter(d=> d.groupId !== 'exec')
+      .attr('cursor', 'pointer')
+      .on("click", function(d){ 
+        d3.event.stopPropagation()
+        return zoom(d, d3.select(this)) 
+      })
+      .on("mouseover", function(d) { 
+        d3.select(this).attr("stroke", "#000")
+        clickCCT(d)
+      })
+      .on("mouseout", function() { 
+        d3.select(this).attr("stroke", null); 
+        d3.select('.panel').style('visibility', 'hidden')
+      })
+
+    svg.selectAll('circle')
+      .filter(d=>d.id === 'exec')
+      .on("mouseover", () => mouseover1())
+      .on("mouseleave", () => mouseleave())
+
+    // search box
+    const input = document.querySelector("input")
+
+    input.addEventListener("keyup", function (event) {
+      if (event.keyCode === 13) {
+        event.preventDefault()
+        let entity = data_flat.find(d=>d.name === input.value) //input: entity name
+        
+        if(entity){
+          let selection = svg.selectAll('circle').filter("#"+ entity.id)
+          let selection_data = selection.data()[0]
+          return zoom(selection_data, selection)
+        }
+      }
+    }) 
+
+    // button to add/remove entities
+    let newData = dataOrig
+    let clickAdd = 0
+    let newBubbles = ['New Bubble', 'New Bubble 2']
+    document.querySelector(".add-entity").addEventListener('click',function (){
+      //let dataOrig1 = JSON.parse(JSON.stringify(dataOrig))
+      newData = addEntity(newData, {name: newBubbles[clickAdd]}, "CoC")  
+      d3.select('.nodesWrapper').remove()
+      updateGraph(JSON.parse(JSON.stringify(newData))) 
+      clickAdd += 1 
+    }) 
+
+    let clickRemove = 0
+    let deleteBubbles = ["CoC-home", "corporate_purchasing"]
+    document.querySelector(".remove-entity").addEventListener('click',function (){
+      //let dataOrig1 = JSON.parse(JSON.stringify(dataOrig))
+      newData = removeEntity(newData, deleteBubbles[clickRemove])  
+      d3.select('.nodesWrapper').remove()
+      updateGraph(JSON.parse(JSON.stringify(newData)))  
+      clickRemove += 1 
+    }) 
+    
+    document.querySelector(".btn-legend").addEventListener('click',function (){
+      legendClicked = !legendClicked
+      d3.select('.btn-legend').html(legendClicked ? 'Hide Legend' : 'Show Legend')
+      d3.select('.legend')
+        .style('z-index', legendClicked ? 3 : 1)
+    }) 
+    
+    function zoom(focus, nodeElement) {
+
+      svg.selectAll("text")
+        .attr('opacity', 0)
+
+      if(focus){
+
+        let k = focus.data ? width / (focus.r * 3.3) : width / (radiusAccessor(focus) * 3.3)
+        let group = focus.data ? data['nodes'].find(d=>d.id === focus.data.groupId) : {x: 0, y:0}
+        let radius = focus.data ? radiusAccessor(focus) : 0
+
+        if(focus.id === 'exec'){ 
+          focus.x = outer_dim/2
+          focus.y = outer_dim/2
+        }
+
+        const arr = nodeElement.attr('transform') ? getTranslation(nodeElement.attr('transform')) : []
+        const x = nodeElement.attr('transform') ? arr[0] : focus.x - radius
+        const y = nodeElement.attr('transform') ? arr[1] : focus.y - radius
+        
+        // create an illusion that clicked node is being zoomed into by shifting container position and zooming into the container (Note: the circle itself is not being transformed/scaled)
+        g.transition()
+          .duration(750)
+          .attr("transform", function(){
+            return `translate(${-((group.x+x)*k-width/2)},${-((group.y+y)*k-height/2)})scale(${k})`   
+          });
+          
+        svg.selectAll("text")
+          .transition().duration(250).delay(150)
+          .attr('opacity', 1)
+
+        svg.selectAll("text.arc-labels").selectAll('textPath')
+          .attr('font-size', '0.4em')
+          .text(d=>d.data.name)
+
+        // hide visibility of 'Center of Competence' node labels
+        svg.selectAll("text.horizontal-labels")
+          .transition().duration(250).delay(150)
+          .attr('opacity', 0)
+
+         svg.selectAll("text.small-horizontal-labels")
+          .transition().duration(250).delay(150)
+          .attr('opacity', 1)
+               
+        svg.selectAll(".zoom-2-horizontal-labels")
+          .transition().duration(250).delay(150)
+          .attr('opacity', 1)
+
+        svg.selectAll("text.header-labels")
+          .transition().duration(250).delay(150)
+          .attr('opacity', 0)
+   
+        svg.selectAll("text.outer-labels")
+          .transition().duration(250).delay(150)
+          .attr('opacity', 0)
+
+        // show full text label of 'Competence Team' nodes
+        svg.selectAll("text.zoom-outer-labels")
+           .transition().duration(250).delay(250)
+           .attr('opacity', d => (d.id !== 'corporate_governance' | d.id !== 'communications') ? 1 : 0)
+
+        // d3.selectAll(".small-icons").attr('opacity', 0)
+        // d3.selectAll("#small-icons-" + focus.data.id)
+        //   .attr('opacity', 1)
+        //   .on('click', function(d){
+        //     d3.event.stopPropagation()
+        //     console.log(d)
+        //     clickCCT(d) 
+        //   })
+    
+      } else {
+
+        // reset to original position
+        g.transition()
+          .duration(750)
+          .attr("transform", function(){
+            return `translate(${width/6},${width/8})scale(1)`     
+          });
+
+        // reset to original label visibility
+        svg.selectAll("text.outer-labels").attr("opacity", 1)
+        svg.selectAll("text.arc-labels").filter(d=>d.data.level === 1).attr("opacity", 1)
+        svg.selectAll("text.horizontal-labels").attr("opacity", 1)
+        svg.selectAll(".donutText").attr('opacity', 1)
+        svg.selectAll("text.arc-labels textPath")
+          .attr('font-size', '0.7em')
+          .text(d=>d.data.truncated_name)
+
+        svg.selectAll("text.arc-labels textPath").each(function(d,i){
+          d3.select(this).call(crop, d.r)
+        })
+
+        d3.selectAll(".small-icons").attr('opacity', 0)
+
+      }
+      
+    }
+
+  }
+
+  function mouseover1() {
+    svg.selectAll("line.exec-source")
+      .attr("stroke-opacity", 1)
+  }
+
+  function mouseover(ele) {
+
+    clickCCT(ele)
+
+    // find circles connected to oval 
+    let nodes = []
+    let conn = ele.connections.map(d=>d)
+    nodes.push(conn)
+    nodes.push(ele.id)
+    nodes = nodes.flat()
+
+    // diminish the opacity of ovals not hovered upon
+    svg.selectAll("ellipse")
+      .filter(d => d.id !== ele.id)
+      .attr("opacity", 0.1)
+   
+    svg.selectAll("text.outer-labels")
+      .filter(d => d.id !== ele.id)
+      .attr("opacity", 0.1)
+
+    // diminish the opacity of non-connected circles (including nested circles)
+    svg.selectAll("circle").attr("opacity", 0.1)
+    svg.selectAll(".small-icons").attr("opacity", 0)
+    svg.selectAll("text.arc-labels").attr("opacity", 0)
+    svg.selectAll("text.horizontal-labels").attr("opacity", 0)
+
+    nodes.forEach(el=>{
+      svg.selectAll("circle#" + el)
+        .attr("opacity", 1)
+      svg.selectAll("ellipse#" + el)
+        .attr("opacity", 1)
+      svg.selectAll("text.outer-labels#" + el)
+        .attr("opacity", 1)
+      svg.selectAll("text.header-labels#" + el)
+        .attr("opacity", 1)
+      svg.selectAll("text.horizontal-labels#" + el)
+        .attr("opacity", 1)
+    })
+
+    let CoC_conn = []
+    let CT_conn = []
+    conn.forEach(d=>{
+      if(d.split('-')[0] === 'CoC'){
+        CoC_conn.push(d.split('-')[1])
+      } else if(d.split('-')[0] === 'CT'){
+        CT_conn.push(d.split('-')[1])
+      }
+    })
+    let contains = containsAny(CoC_conn, CT_conn)
+
+    if(contains.bool){
+      contains.item.forEach(el=>{
+        svg.selectAll("text.arc-labels#" + `CoC-${el}`)
+          .attr("opacity",1)
+        svg.selectAll("text.header-labels#" + `CoC-${el}`)
+          .attr("opacity", 0)
+      })
+    } 
+
+    // diminish opacity of all connector lines
+    svg.selectAll("line")
+      .attr("stroke-opacity", 0)
+      //.attr("stroke-opacity", d => (d.type === 'cct-coc' | d.type === 'cct-ct') ? 0 : 0.1)
+
+    svg.selectAll("polygon")
+      .attr("opacity", 0.1)
+
+    function containsAny(source,target){
+      var result = source.filter(function(item){ return target.indexOf(item) > -1});   
+      return {bool: result.length > 0, item: result};  
+    }   
+
+  }
+
+  function mouseleave() {
+
+    d3.select('.panel-wrapperCOC').style('visibility', 'hidden')
+
+    svg.selectAll("ellipse").attr("opacity", 1)
+    svg.selectAll("circle").attr("opacity", 1)
+    svg.selectAll(".small-icons").attr("opacity", 0)
+    svg.selectAll("text.outer-labels").attr("opacity", 1)
+    svg.selectAll("text.header-labels").attr("opacity", 0)
+    svg.selectAll("text.arc-labels").filter(d=>d.data.level === 1).attr("opacity", 1)
+    svg.selectAll("text.horizontal-labels").attr("opacity", 1)
+    svg.selectAll('line')
+      .attr("stroke-opacity", 0)
+      //.attr("stroke-opacity", d => (d.type === 'cct-coc' | d.type === 'cct-ct') ? 0 : 1)
+    svg.selectAll("polygon")
+      .attr("opacity", 1)
+
+    svg.selectAll("text.header-labels")
+      .selectAll("[id^=CoC]")
+      .attr("opacity", 0)
+
+    svg.selectAll("text.arc-labels")
+      .selectAll("[id^=CoC]")
+      .attr("opacity",1)
+
+    svg.selectAll("text.horizontal-labels")
+      .selectAll("[id^=CoC]")
+      .attr("opacity", 0)
+  }
+  
+})
+
+
+function drawHexagons(nodeElement, data, options) {
+
+  const width = options.width
+  const height = options.height
+
+  const pack = data => d3.pack()
+    .size([width, height])
+    .padding(3)
+  (d3.hierarchy(data)
+    .sum(d => d.value)
+    .sort((a, b) => b.value - a.value))
+
+  const root = pack(data);
+  let focus = root;
+
+  const node = nodeElement.append("g")
+  .selectAll("circle")
+  .data(root.descendants().slice(1))
+  .join("circle")
+  .attr("id", d => d.data.id)
+  .attr("class", d => d.data.groupId)
+  .attr("fill", d => (d.data.groupId === "corporate_governance" | d.data.groupId === "communications") ? color(d.depth+1) : color(d.depth))
+  .attr("transform", d => `translate(${(d.x-root.x)},${(d.y-root.y)})`)
+  .attr("r", d => d.r)
+
+  // parent label arc paths
+  nodeElement.append("g")
+    .attr('pointer-events', 'none') // ensure text labels are not blocking circles from being hovered upon
+    .selectAll("path")
+    .data(root.descendants().filter(d=>d.children && d.children.length > 1))
+    .join("path") 
+      .attr("class", "group-arc")
+      .attr("id", function(d,i) { return `arc${d.data.id}`; })
+      .attr("fill", "none")
+      .attr("stroke", "none")
+      .attr("transform", d => {
+        if(d.data.level === 1){
+          return `translate(${(d.x-root.x)},${(d.y-root.y-5)})`
+        } else {
+          return `translate(${(d.x-root.x)},${(d.y-root.y-1)})`
+        }
+      })
+      .attr("d", function(d,i) {
+          return describeArc(0, 0, d.r, 160, -160)
+      } );
+
+  // parent label texts along paths
+  let P = nodeElement.append("g")
+    .attr('pointer-events', 'none') // ensure text labels are not blocking circles from being hovered upon
+    .selectAll("text")
+    .data(root.descendants().filter(d=>d.children && d.children.length > 1))
+    .join("text")
+      .attr('class', 'arc-labels')
+      .attr("id", d => d.data.id)
+      .attr("font-weight", "bold")
+      .attr("text-anchor", "middle")
+      .attr("alignment-baseline", "middle")
+      .attr("opacity", d => d.data.level === 1 ? 1 : 0)
+      .append("textPath")
+        .attr("font-size", d => {
+          if(d.data.level === 1){
+            return "0.7em"
+          } else if(d.data.level === 2){
+            return "0.4em"
+          } else {
+            return "0.2em"
+          }
+        })
+        .attr("startOffset","50%")
+        .attr("xlink:href", function(d,i){ return `#arc${d.data.id}`;})
+        .text(d=> d.data.name) 
+
+    P.each(function(d,i){
+      //console.log(d)
+      //if(d.r < 50) {
+        d3.select(this).call(crop, d.r)
+      //}
+    })
+    
+  // these are the FULL/TRUNCATED horizontal texts that appear initially for the 2nd-level bubbles
+  nodeElement.append("g")
+    .attr('pointer-events', 'none') // ensure text labels are not blocking circles from being hovered upon
+    .selectAll("text")
+    .data(root.descendants().filter(d=>d.data.level === 2))
+    .join("text")
+    .attr("id", d => d.data.id)
+    .attr("class", "horizontal-labels")
+    .attr("transform", d => `translate(${(d.x-root.x)},${(d.y-root.y)})`)
+    .attr("font-size", d=> (d.r < 25 && d.data.truncated_name.length > 15) ? "0.4em" : "0.6em")
+    .attr("font-weight", "normal")
+    .attr("dy", d => {
+      if(d.data.name.length > 30){
+        return -2.2
+      } else if(d.data.name.length > 15){
+        return -2
+      } else {
+        return -1
+      }
+     })
+    .attr("y", 0)
+    .attr("opacity", 1)
+    .attr("text-anchor", "middle")
+    .attr('alignment-baseline', "middle")
+    .text(d => d.r < 10 ? "" : (d.r < 30 ? d.data.truncated_name : d.data.name))
+    .call(wrap, 16)
+  
+  // these are the FULL/TRUNCATED horizontal texts that appear for bubbles deeper than the 2nd-level
+  nodeElement.append("g")
+    .attr('pointer-events', 'none') // ensure text labels are not blocking circles from being hovered upon
+    .selectAll("text")
+    .data(root.descendants().filter(d=>(d.data.level > 2 && !d.children)))
+    .join("text")
+    .attr("id", d => d.data.id)
+    .attr("class", d => "zoom-" + d.data.level + "-horizontal-labels")
+    .attr("transform", d => `translate(${(d.x-root.x)},${(d.y-root.y)})`)
+    .attr("font-size", d => {
+      if(d.data.level < 3){
+        return "0.4em"
+      } else {
+        return d.r >= 10 ? "0.2em" : "0.15em"
+      }
+    })
+    .attr("font-weight", "normal")
+    .attr("dy", d => {
+      if(d.data.name.length > 30){
+        return -1.6
+      } else if(d.data.name.length > 20){
+        return -1
+      } else {
+        return 0
+      }
+     })
+    .attr("y", 0)
+    .attr("opacity", 0)
+    .attr("text-anchor", "middle")
+    .attr('alignment-baseline', "middle")
+    .text(d => (d.r < 30 ? d.data.truncated_name : d.data.name))
+    .call(wrap, 16)
+
+  // these are the FULL horizontal texts that appear on zoom
+  nodeElement.append("g")
+    .attr('pointer-events', 'none') // ensure text labels are not blocking circles from being hovered upon
+    .selectAll("text")
+    .data(root.descendants().filter(d=>(d.data.level === 2 && !d.children)))
+    .join("text")
+    .attr("id", d => d.data.id)
+    .attr("class", d => "small-horizontal-labels")
+    .attr("transform", d => `translate(${(d.x-root.x)},${(d.y-root.y)})`)
+    .attr("font-size", d => {
+      if(d.data.level < 3){
+        return "0.4em"
+      } else {
+        return "0.2em"
+      }
+    })
+    .attr("font-weight", "normal")
+    .attr("dy", d => {
+      if(d.data.name.length > 30){
+        return -2.2
+      } else if(d.data.name.length > 15){
+        return -2
+      } else {
+        return -0.8
+      }
+     })
+    .attr("y", 0)
+    .attr("opacity", 0)
+    .attr("text-anchor", "middle")
+    .attr('alignment-baseline', "middle")
+    .text(d => d.data.name)
+    .call(wrap, 16)
+
+  nodeElement.append("g")
+    .attr('pointer-events', 'none') // ensure text labels are not blocking circles from being hovered upon
+    .selectAll("circle")
+    .data(root.descendants().filter(d=>(d.data.level > 1) || (d.data.type == 'inner-circle')))
+    .join("circle")
+    .attr("id", d => "small-icons-" + d.data.id)
+    .attr("class", d => "small-icons")
+    .attr("transform", d => `translate(${(d.x-root.x+d.r/2+d.r/4)},${(d.y-root.y-d.r/3-d.r/8)})`)
+    .attr("fill", 'white')
+    .attr("r", d => d.r/10)
+    .attr("opacity", 0)
+
+}
+
+function toggleClass(elem,className){
+  if (elem.className.indexOf(className) !== -1){
+    elem.className = elem.className.replace(className,'');
+  }
+  else{
+    elem.className = elem.className.replace(/\s+/g,' ') +   ' ' + className;
+  }
+  
+  return elem;
+}
+
+function toggleDisplay(elem){
+  const curDisplayStyle = elem.style.display;     
+        
+  if (curDisplayStyle === 'none' || curDisplayStyle === ''){
+    elem.style.display = 'block';
+  }
+  else{
+    elem.style.display = 'none';
+  }
+}
+
+function toggleMenuDisplay(e){
+  console.log(e)
+  const dropdown = e.currentTarget.parentNode;
+  const menu = dropdown.querySelector('.menu');
+
+  toggleClass(menu,'hide');
+}
+
+function handleOptionSelected(e, titleElem){
+
+  toggleClass(e.target.parentNode, 'hide');     
+
+  const id = e.target.id;
+  const newValue = e.target.textContent + ' ';
+
+  titleElem.textContent = newValue;
+
+  //trigger custom event
+  titleElem.dispatchEvent(new Event('change'));
+
+}
+
+function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+    var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
+    return {
+        x: centerX + (radius * Math.cos(angleInRadians)),
+        y: centerY + (radius * Math.sin(angleInRadians))
+    };
+}
+
+function getTranslation(transform){
+  // Create a dummy g for calculation purposes only. This will never
+  // be appended to the DOM and will be discarded once this function
+  // returns.
+  var g = document.createElementNS("http://www.w3.org/2000/svg", "g")
+
+  // Set the transform attribute to the provided string value.
+  g.setAttributeNS(null, "transform", transform)
+
+  // consolidate the SVGTransformList containing all transformations
+  // to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
+  // its SVGMatrix.
+  var matrix = g.transform.baseVal.consolidate().matrix
+
+  // As per definition values e and f are the ones for the translation.
+  return [matrix.e, matrix.f, matrix.a, matrix.d]
+}
+
+function describeArc(x, y, radius, startAngle, endAngle){
+  var start = polarToCartesian(x, y, radius, endAngle);
+  var end = polarToCartesian(x, y, radius, startAngle);
+  var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
+  var d = [
+    "M", start.x, start.y, 
+    "A", radius, radius, 0, 1, 1, end.x, end.y
+  ].join(" ");
+  return d;       
+}
+
+function wrap(text, width) {
+
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    }
+  })
+}
+
+function crop(text, circleRadius) {
+  text.each(function() {
+    var text = d3.select(this)
+    while (text.node().getComputedTextLength() > circleRadius * 3.5) {
+        text.text(text.text().slice(0, -4) + "...");
+    }
+  })
+};
+
+function clickCCT(d){
+
+  let name = d.name ? d.name : d.data.name
+  if(name === prevName || prevName===undefined){
+    clicked = true
+  }
+
+  if((d.id && d.type == "inner-circle") || d.parent){
+
+    let panelWrapper = d3.select('.panel')
+    panelWrapper.select('.panel-header').text(name)
+    //d3.select('.btn-legend').style('opacity', clicked ? 1 : 0)
+
+    let test = [
+      {"Team Member": 'Member 1', Competence: 'Sales', Capacity: '30%', role: 'Role 1'},
+      {"Team Member": 'Member 2', Competence: 'Marketing', Capacity: '20%', role: 'Role 1'},
+      {"Team Member": 'Member 3', Competence: 'Marketing', Capacity: '30%', role: 'Role 1'},
+      {"Team Member": 'Member 4', Competence: 'Sales', Capacity: '30%', role: 'Role 1'},
+      {"Team Member": 'Member 5', Competence: 'Marketing', Capacity: '20%', role: 'Role 1'},
+      {"Team Member": 'Member 6', Competence: 'Marketing', Capacity: '30%', role: 'Role 1'},
+      {"Team Member": 'Member 7', Competence: 'Sales', Capacity: '30%', role: 'Role 1'},
+      {"Team Member": 'Member 8', Competence: 'Marketing', Capacity: '20%', role: 'Role 1'},
+      {"Team Member": 'Member 9', Competence: 'Marketing', Capacity: '30%', role: 'Role 1'},
+      {"Team Member": 'Member 10', Competence: 'Sales', Capacity: '30%', role: 'Role 1'},
+      {"Team Member": 'Member 11', Competence: 'Marketing', Capacity: '20%', role: 'Role 1'},
+      {"Team Member": 'Member 12', Competence: 'Marketing', Capacity: '30%', role: 'Role 1'}
+    ]
+
+    document.querySelector('.panel-speaker .menu').className = 'menu pointerCursor hide'
+
+    panelWrapper.select('.panel-speaker .dropdown .title').html('Speaker <i class="arrow down"></i>')
+    const dropdownTitle1 = document.querySelector('.panel-speaker .dropdown .title');
+    dropdownTitle1.addEventListener('click', toggleMenuDisplay);
+    
+    panelWrapper.select('#table table').remove()
+    d3.select('.panel').style('visibility', 'hidden')
+
+    if(clicked === false & prevId === d.id){
+      panelWrapper.select('#table table').remove()
+      d3.select('.panel').style('visibility', 'hidden')
+    } else {
+      panelWrapper.select('#table table').remove()
+      d3.select('.panel').style('visibility', 'visible')
+    }
+
+    var table = panelWrapper.select('#table').append('table')
+    var thead = table.append('thead')
+    var tbody = table.append('tbody')
+    var columns = ['Team Member', 'Competence', 'Capacity']
+
+    thead.append('tr')
+      .selectAll('th')
+        .data(columns)
+        .enter()
+      .append('th')
+        .text(function (d) { return d })
+
+    var rows = tbody.selectAll('tr')
+        .data(test)
+        .enter()
+      .append('tr')
+
+    var cells = rows.selectAll('td')
+        .data(function(row) {
+          return columns.map(function (column) {
+            return { column: column, value: row[column] }
+          })
+        })
+        .enter()
+      .append('td')
+        .text(function (d) { return d.value })
+
+    prevId = d.id
+    d3.event.stopPropagation()
+
+    // panel dropdown menus
+    const dropdownOptions1 = document.querySelectorAll('.panel-speaker .dropdown .option');
+    dropdownOptions1.forEach(option => option.addEventListener('click', (e) => handleOptionSelected(e, dropdownTitle1) ));
+  } else if(d.id && d.id.includes("CCT")){
+
+    // clicked = true
+    // prevName = name
+    // d3.select('#table table').remove()
+    // d3.select('.panel').style('visibility', 'hidden')
+    let panelWrapperCOC = d3.select('.panel-wrapperCOC')
+    panelWrapperCOC.select('.panel-header').text(d.name)
+    //d3.select('.btn-legend').style('opacity', clicked ? 1 : 0)
+
+    let test = [
+      {name: 'Member 1', competence: 'Sales', capacity: '30%', role: 'Role 1'},
+      {name: 'Member 2', competence: 'Marketing', capacity: '20%', role: 'Role 1'},
+      {name: 'Member 3', competence: 'Marketing', capacity: '30%', role: 'Role 1'},
+      {name: 'Member 4', competence: 'Sales', capacity: '30%', role: 'Role 1'},
+      {name: 'Member 5', competence: 'Marketing', capacity: '20%', role: 'Role 1'},
+      {name: 'Member 6', competence: 'Marketing', capacity: '30%', role: 'Role 1'},
+      {name: 'Member 7', competence: 'Sales', capacity: '30%', role: 'Role 1'},
+      {name: 'Member 8', competence: 'Marketing', capacity: '20%', role: 'Role 1'},
+      {name: 'Member 9', competence: 'Marketing', capacity: '30%', role: 'Role 1'},
+      {name: 'Member 10', competence: 'Sales', capacity: '30%', role: 'Role 1'},
+      {name: 'Member 11', competence: 'Marketing', capacity: '20%', role: 'Role 1'},
+      {name: 'Member 12', competence: 'Marketing', capacity: '30%', role: 'Role 1'}
+    ]
+
+    document.querySelector('.panel-CoC .menu').className = 'menu pointerCursor hide'
+    document.querySelector('.panel-speaker .menu').className = 'menu pointerCursor hide'
+
+    panelWrapperCOC.select('.panel-CoC .dropdown .title').html('Select a CoC <i class="arrow down"></i>')
+    panelWrapperCOC.select('.panel-speaker .dropdown .title').html('Select a leadership role <i class="arrow down"></i>')
+    const dropdownTitle = document.querySelector('.panel-CoC .dropdown .title');
+    dropdownTitle.addEventListener('click', toggleMenuDisplay);
+    const dropdownTitle1 = document.querySelector('.panel-speaker-CCT .dropdown .title');
+    dropdownTitle1.addEventListener('click', toggleMenuDisplay);
+
+    panelWrapperCOC.select('#table table').remove()
+    d3.select('.panel-wrapperCOC').style('visibility', 'hidden')
+
+    if(clicked === false & prevId === d.id){
+      panelWrapperCOC.select('#table table').remove()
+      d3.select('.panel-wrapperCOC').style('visibility', 'hidden')
+    } else {
+      panelWrapperCOC.select('#table table').remove()
+      d3.select('.panel-wrapperCOC').style('visibility', 'visible')
+    }
+
+    // dynamically populate CoC dropdown based on selected data
+    // const menu = d3.select('.panel-CoC .dropdown .menu')
+    // menu.selectAll('div.option')
+    //   .data(d.connections ? d.connections : [])
+    //   .enter()
+    //   .append('div')
+    //     .attr("class", 'option')
+    //     .text(d=>d)
+
+    var table = panelWrapperCOC.select('#table').append('table')
+    var thead = table.append('thead')
+    var tbody = table.append('tbody')
+    var columns = ['name', 'competence', 'capacity', 'role']
+
+    thead.append('tr')
+      .selectAll('th')
+        .data(columns)
+        .enter()
+      .append('th')
+        .text(function (d) { return d })
+
+    var rows = tbody.selectAll('tr')
+        .data(test)
+        .enter()
+      .append('tr')
+
+    var cells = rows.selectAll('td')
+        .data(function(row) {
+          return columns.map(function (column) {
+            return { column: column, value: row[column] }
+          })
+        })
+        .enter()
+      .append('td')
+        .text(function (d) { return d.value })
+
+    prevId = d.id
+    d3.event.stopPropagation()
+
+    // panel dropdown menus
+    const dropdownOptions = document.querySelectorAll('.panel-CoC .dropdown .option');
+    dropdownOptions.forEach(option => option.addEventListener('click', (e) => handleOptionSelected(e, dropdownTitle) ));
+
+    const dropdownOptions1 = document.querySelectorAll('.panel-speaker-CCT .dropdown .option');
+    dropdownOptions1.forEach(option => option.addEventListener('click', (e) => handleOptionSelected(e, dropdownTitle1) ));
+
+
+  }
+
+  prevName = name
+
+}
+
+</script>
+</body>
+</html>

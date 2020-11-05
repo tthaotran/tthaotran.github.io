@@ -1,0 +1,808 @@
+{
+  "nodes": [
+  {
+    "id": "exec",
+    "name": "Executive Board", 
+    "type": "circle",
+    "value": 8
+  },
+  {
+    "id": "strategy",
+    "name": "Strategy", 
+    "type": "inner-circle",
+    "value": 1
+  },
+  {
+    "id": "corporate_governance",
+    "name": "Corporate Governance", 
+    "type": "inner-circle",
+    "children": [
+      {
+        "id": "ET-1-CorpGov",
+        "type": "circle",
+        "name": "Corp. Tax",
+        "children": [
+          {
+            "id": "EG-1-CorpGov",
+            "type": "circle",
+            "name": "Tax Strategy",
+            "value": 1
+          },
+          {
+            "id": "EG-2-CorpGov",
+            "type": "circle",
+            "name": "Tax Consulting",
+            "value": 1
+          },
+          {
+            "id": "EG-3-CorpGov",
+            "type": "circle",
+            "name": "Tax Analytics",
+            "value": 1
+          },
+          {
+            "id": "ET-4-CorpGov",
+            "type": "circle",
+            "name": "Task Compliance & Risk Management",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": "ET-2-CorpGov",
+        "type": "circle",
+        "name": "Corp. Legal",
+        "value": 1
+      },
+      {
+        "id": "ET-3-CorpGov",
+        "type": "circle",
+        "name": "Corp. Data Protection",
+        "value": 1
+      },
+      {
+        "id": "ET-4-CorpGov",
+        "type": "circle",
+        "name": "Corp. Audit",
+        "value": 1
+      }
+    ]
+  },
+  {
+    "id": "communications",
+    "name": "Corporate Communication, PR & Brand Marketing", 
+    "type": "inner-circle",
+    "children": [
+      {
+        "id": "ET-1-CorpGov",
+        "type": "circle",
+        "name": "Corporate Com. / PR",
+        "value": 1
+      },
+      {
+        "id": "ET-2-CorpGov",
+        "type": "circle",
+        "name": "Market Research & Insights",
+        "value": 1
+      },
+      {
+        "id": "ET-3-CorpGov",
+        "type": "circle",
+        "name": "Brand Management",
+        "value": 1
+      }
+    ]
+  },
+  {
+    "id": "sustainability",
+    "name": "Sustainability", 
+    "type": "inner-circle",
+    "value": 1
+  },
+  {
+    "id": "corporate_purchasing",
+    "name": "Corporate Purchasing", 
+    "type": "inner-circle",
+    "value": 1
+  },
+  {
+    "id": "CCT-plt_culinary",
+    "name": "PLT Culinary", 
+    "type": "oval",
+    "value": 1,
+    "connections": ["CoC-engineering", "CCT-SOP", "exec", "CT-1-home", "CT-2-home", "CT-home-4", "CT-home-7", "CT-home-8", "CoC-home"]
+  },
+  {
+    "id": "CCT-plt_cleaning",
+    "name": "PLT cleaning", 
+    "type": "oval",
+    "value": 1,
+    "connections": ["CoC-engineering", "CCT-SOP", "exec", "CT-1-home", "CT-2-home", "CT-home-4", "CT-home-7", "CT-home-8", "CoC-home", "CCT-NEATO"]
+  },
+  {
+    "id": "CCT-VORward",
+    "name": "VORward", 
+    "type": "oval",
+    "value": 1,
+    "connections": ["CoC-global_finance", "CoC-global_people", "CoC-global_enterprise", "CoC-home", "corporate_governance"]
+  },
+  {
+    "id": "CCT-SOP",
+    "name": "S&OP", 
+    "type": "oval",
+    "value": 1,
+    "connections": ["CoC-global_finance", "CoC-engineering", "CoC-home"]
+  },
+  {
+    "id": "CCT-ssi",
+    "name": "Sales Strategy Implementation", 
+    "type": "oval",
+    "value": 1,
+    "connections": ["CoC-global_finance", "CoC-global_people", "CoC-global_enterprise", "CoC-home", "CCT-VORward", "CoC-engineering", "CCT-VORward", "CCT-plt_culinary", "CCT-plt_cleaning", "CT-1-home", "CT-home-4", "CT-home-7"]
+  },
+  {
+    "id": "CCT-finance_systems",
+    "name": "Finance Systems & Tools", 
+    "type": "oval",
+    "value": 1,
+    "connections": ["CoC-global_finance", "CoC-global_enterprise", "CT-home-7", "CoC-home", "CoC-global_enterprise"]
+  },
+  {
+    "id": "CCT-indirect_procurement",
+    "name": "Indirect Procurement", 
+    "type": "oval",
+    "value": 1,
+    "connections": ["CoC-global_finance", "CoC-home", "CoC-engineering", "CoC-global_people", "CoC-global_enterprise"]
+  },
+  {
+    "id": "CCT-hr",
+    "name": "HR Projects & Special Tasks", 
+    "type": "oval",
+    "value": 1,
+    "connections": ["CoC-global_people", "CoC-global_enterprise"]
+  },
+  {
+    "id": "CCT-trademark_protection",
+    "name": "Trademark Protection", 
+    "type": "oval",
+    "value": 1,
+    "connections": ["corporate_governance", "CT-2-home", "CoC-home"]
+  },
+  {
+    "id": "CCT-demand_mgmt",
+    "name": "IT Demand Management", 
+    "type": "oval",
+    "value": 1,
+    "connections": ["CoC-global_finance", "CoC-global_people", "CoC-global_enterprise", "CoC-home", "CoC-engineering"]
+  },
+  {
+    "id": "CCT-customer_service",
+    "name": "Customer Service", 
+    "type": "oval",
+    "value": 1
+  },
+  {
+    "id": "CCT-biz_dev",
+    "name": "Business Development Customer & Advisor Service", 
+    "type": "oval",
+    "value": 1
+  },
+  {
+    "id": "CCT-NEATO",
+    "name": "NEATO", 
+    "type": "oval",
+    "value": 1
+  },
+  {
+    "id": "CoC-home",
+    "name": "HOME",
+    "type": "circle",
+    "children": [
+      {
+        "id": "CT-1-home",
+        "name": "Sales Systems, Digital & Omnichannel",
+        "type": "circle",
+        "children": [
+          {
+            "id": "ET-1-home",
+            "name": "Omnichannel",
+            "type": "circle",
+            "children": [
+              {
+                "id": "EG-1-home",
+                "name": "Omnichannel Experience & Change Management",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-2-home",
+                "name": "CRM: Tech. orchestration of Omnichannel & User Journeys",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-3-home",
+                "name": "Definition OC Requirements for Controlling & Reporting",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-4-home",
+                "name": "Business Development Stores",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-5-home",
+                "name": "Business Dev. Customer & Advisor Service",
+                "type": "circle",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "ET-2-home",
+            "name": "Business Development Direct Sales",
+            "type": "circle",
+            "children": [
+              {
+                "id": "EG-7-home",
+                "name": "Business Development Direct Sales Thermomix",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-8-home",
+                "name": "Business Development Direct Sales Kobold",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-9-home",
+                "name": "Business Development Direct Sales Temial",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-10-home",
+                "name": "New Business Models",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-11-home",
+                "name": "Training & Learning Direct Sales Academy",
+                "type": "circle",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "ET-3-home",
+            "name": "Advisor Tools",
+            "type": "circle",
+            "children": [
+              {
+                "id": "EG-12-home",
+                "name": "Advisor Portal",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-13-home",
+                "name": "Commission Engine",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-14-home",
+                "name": "Advisor Lifecycle & Learning Mgmt. Solution",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-15-home",
+                "name": "Country Solutions",
+                "type": "circle",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "ET-4-home",
+            "name": "Digital",
+            "type": "circle",
+            "children": [
+              {
+                "id": "EG-16-home",
+                "name": "Digital Experience Design",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-17-home",
+                "name": "Digital Platforms",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-18-home",
+                "name": "Community",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-19-home",
+                "name": "Digital Marketing & Lead Management",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-20-home",
+                "name": "Big Data & Analytics",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-21-home",
+                "name": "Recipe Business",
+                "type": "circle",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "id": "ET-5-home",
+            "name": "Program Management",
+            "type": "circle",
+            "children": [
+              {
+                "id": "EG-22-home",
+                "name": "Program Mgmt. Advisor Tools",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-23-home",
+                "name": "Task Force Build Team (TBD)",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-24-home",
+                "name": "Program Mgmt. CRM, Strores, Cust. & Adv. Service",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-25-home",
+                "name": "Task Force Build Team",
+                "type": "circle",
+                "value": 1
+              },
+              {
+                "id": "EG-26-home",
+                "name": "Program Mgmt. Digital",
+                "type": "circle",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "CT-2-home",
+        "name": "Marketing",
+        "type": "circle",
+        "value": 1
+      },
+      {
+        "id": "CT-home-4",
+        "name": "Sales",
+        "type": "circle",
+        "children": [
+          {
+            "id": "ET-15-home",
+            "name": "KS/TM Country xxx",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-16-home",
+            "name": "KS/TM Country xxx",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-17-home",
+            "name": "KS/TM Country xxx",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-18-home",
+            "name": "KS/TM Country xxx",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-19-home",
+            "name": "KS/TM Country xxx",
+            "type": "circle",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": "CT-home-5",
+        "name": "Complementary Product Portfolio",
+        "type": "circle",
+        "value": 1
+      },
+      {
+        "id": "CT-home-6",
+        "name": "Recognition & Events",
+        "type": "circle",
+        "value": 1
+      },
+      {
+        "id": "CT-home-7",
+        "name": "Finance Markets & Business Partnering",
+        "type": "circle",
+        "children": [
+          {
+            "id": "ET-20-home",
+            "name": "FICO",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-21-home",
+            "name": "Governance",
+            "type": "circle",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": "CT-home-8",
+        "name": "Operations",
+        "type": "circle",
+        "value": 1
+      }
+    ]
+  },
+  {
+    "id": "CoC-engineering",
+    "name": "Engineering",
+    "type": "circle",
+    "children": [
+      {
+        "id": "CT-1-engineering",
+        "name": "R&D",
+        "type": "circle",
+        "value": 1
+      },
+      {
+        "id": "CT-2-engineering",
+        "name": "Production",
+        "type": "circle",
+        "value": 1
+      },
+      {
+        "id": "CT-3-engineering",
+        "name": "Admin",
+        "type": "circle",
+        "value": 1
+      },
+      {
+        "id": "CT-4-engineering",
+        "name": "Procurement",
+        "type": "circle",
+        "value": 1
+      }
+    ] 
+  },
+  {
+    "id": "CoC-global_finance",
+    "name": "Global Finance & Support",
+    "type": "circle",
+    "children": [
+      {
+        "id": "CT-global_finance-1",
+        "name": "Legal Reporting",
+        "type": "circle",
+        "value": 1
+      },
+      {
+        "id": "CT-global_finance-2",
+        "name": "Financial Planning & Performance",
+        "type": "circle",
+        "value": 1
+      },
+      {
+        "id": "CT-global_finance-3",
+        "name": "Risk & Support",
+        "type": "circle",
+        "value": 1
+      }
+    ]
+  },
+  {
+    "id": "CoC-global_people",
+    "name": "Global People & Culture",
+    "type": "circle",
+    "children": [
+      {
+        "id": "CT-1-global_people",
+        "name": "HR Business Partnering",
+        "type": "circle",
+        "children": [
+          {
+            "id": "ET-1-global_people",
+            "name": "Recruiting",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-2-global_people",
+            "name": "HR Admin & Backoffice",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-3-global_people",
+            "name": "Payroll",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-4-global_people",
+            "name": "Development & Training",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-5-global_people",
+            "name": "Local Business Partnering",
+            "type": "circle",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": "CT-global_people-2",
+        "name": "Total Rewards & Performance",
+        "type": "circle",
+        "value": 1
+      },
+      {
+        "id": "CT-global_people-3",
+        "name": "People Development & Culture",
+        "type": "circle",
+        "children": [
+          {
+            "id": "ET-6-global_people",
+            "name": "Talent Management",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-7-global_people",
+            "name": "Leadership & Culture",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-8-global_people",
+            "name": "Learning & Development",
+            "type": "circle",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": "CT-global_people-4",
+        "name": "Governance & Systems & Services",
+        "type": "circle",
+        "children": [
+          {
+            "id": "ET-10-global_people",
+            "name": "Regulatory Framework",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-11-global_people",
+            "name": "HR Controlling & Analytics & Efficiency",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-13-global_people",
+            "name": "HR IT Systems, Tools & Application",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-14-global_people",
+            "name": "HR Shared Service Centers (1. Step: Germany)",
+            "type": "circle",
+            "value": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "CoC-portfolio_management",
+    "name": "Portfolio Management",
+    "type": "circle",
+     "value": 1
+  },
+  {
+    "id": "CoC-global_enterprise",
+    "name": "Global Enterprise IT",
+    "type": "circle",
+    "children": [
+      {
+        "id": "CT-1-global_enterprise",
+        "name": "IT Infrastructure",
+        "type": "circle",
+        "children": [
+          {
+            "id": "ET-21-home",
+            "name": "Data-center",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-22-home",
+            "name": "Service Desk",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-23-home",
+            "name": "Network",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-24-home",
+            "name": "Work-place",
+            "type": "circle",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": "CT-2-global_enterprise",
+        "name": "IT Application Mgmt.",
+        "type": "circle",
+        "children": [
+          {
+            "id": "ET-25-home",
+            "name": "SAP",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-26-home",
+            "name": "Non-SAP",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-27-home",
+            "name": "Business Intelligence",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-28-home",
+            "name": "Near-shore",
+            "type": "circle",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": "CT-3-global_enterprise",
+        "name": "IT Governance",
+        "type": "circle",
+        "children": [
+          {
+            "id": "ET-29-home",
+            "name": "Contract & License Mgmt.",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-30-home",
+            "name": "IT Security",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-31-home",
+            "name": "IT Financial Mgmt",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-32-home",
+            "name": "Enterprise Architecture",
+            "type": "circle",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": "CT-4-global_enterprise",
+        "name": "IT Country Consulting",
+        "type": "circle",
+        "children": [
+          {
+            "id": "ET-33-home",
+            "name": "North-America",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-34-home",
+            "name": "Asia",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-35-home",
+            "name": "Europe Big",
+            "type": "circle",
+            "value": 1
+          },
+          {
+            "id": "ET-36-home",
+            "name": "Europe Small",
+            "type": "circle",
+            "value": 1
+          }
+        ]
+      }
+    ] 
+  }
+],
+  "links": [
+    { "source": "exec", "target": "CoC-engineering", "start_id": "exec", "end_id": "CoC-engineering", "type": "outer" },
+    { "source": "exec", "target": "CoC-global_people", "start_id": "exec", "end_id": "CoC-global_people", "type": "outer" },
+    { "source": "exec", "target": "CoC-home", "start_id": "exec", "end_id": "CoC-home", "type": "outer" },
+    { "source": "exec", "target": "CoC-portfolio_management", "start_id": "exec", "end_id": "CoC-portfolio_management", "type": "outer" },
+    { "source": "exec", "target": "CoC-global_enterprise", "start_id": "exec", "end_id": "CoC-global_enterprise", "type": "outer" },
+    { "source": "exec", "target": "CoC-global_finance", "start_id": "exec", "end_id": "CoC-global_finance", "type": "outer" },
+    { "source": "exec", "target": "strategy", "start_id": "exec", "end_id": "strategy", "type": "inner" },
+    { "source": "exec", "target": "corporate_governance", "start_id": "exec", "end_id": "corporate_governance", "type": "inner" },
+    { "source": "exec", "target": "communications", "start_id": "exec", "end_id": "communications", "type": "inner" },
+    { "source": "exec", "target": "sustainability", "start_id": "exec", "end_id": "sustainability", "type": "inner" },
+    { "source": "exec", "target": "CCT-plt_cleaning", "start_id": "exec", "end_id": "CCT-plt_cleaning", "type": "outer-oval" },
+    { "source": "exec", "target": "CCT-plt_culinary", "start_id": "exec", "end_id": "CCT-plt_culinary", "type": "outer-oval" },
+    { "source": "CCT-plt_culinary", "target": "CoC-home", "start_id": "CCT-plt_culinary", "end_id": "CoC-home", "type": "cct-coc" },
+    { "source": "CCT-plt_culinary", "target": "CoC-engineering", "start_id": "CCT-plt_culinary", "end_id": "CoC-engineering", "type": "cct-coc" },
+    { "source": "CCT-plt_cleaning", "target": "CoC-home", "start_id": "CCT-plt_cleaning", "end_id": "CoC-home", "type": "cct-coc" },
+    { "source": "CCT-plt_cleaning", "target": "CoC-engineering", "start_id": "CCT-plt_cleaning", "end_id": "CoC-engineering", "type": "cct-coc" },
+    { "source": "CCT-VORward", "target": "CoC-home", "start_id": "CCT-VORward", "end_id": "CoC-home", "type": "cct-coc" },
+    { "source": "CCT-VORward", "target": "CoC-global_enterprise", "start_id": "CCT-VORward", "end_id": "CoC-global_enterprise", "type": "cct-coc" },
+    { "source": "CCT-SOP", "target": "CoC-home", "start_id": "CCT-SOP", "end_id": "CoC-home", "type": "cct-coc" },
+    { "source": "CCT-SOP", "target": "CoC-engineering", "start_id": "CCT-SOP", "end_id": "CoC-engineering", "type": "cct-coc" },
+    { "source": "CCT-ssi", "target": "CoC-home", "start_id": "CCT-ssi", "end_id": "CoC-home", "type": "cct-coc" },
+    { "source": "CCT-finance_systems", "target": "CoC-global_finance", "start_id": "CCT-finance_systems", "end_id": "CoC-global_finance", "type": "cct-coc" },
+    { "source": "CCT-indirect_procurement", "target": "CoC-global_finance", "start_id": "CCT-indirect_procurement", "end_id": "CoC-global_finance", "type": "cct-coc" },
+    { "source": "CCT-hr", "target": "CoC-global_people", "start_id": "CCT-hr", "end_id": "CoC-global_people", "type": "cct-coc" },
+    { "source": "CCT-trademark_protection", "target": "corporate_governance", "start_id": "CCT-trademark_protection", "end_id": "corporate_governance", "type": "cct-ct" },
+    { "source": "CCT-demand_mgmt", "target": "CoC-global_enterprise", "start_id": "CCT-demand_mgmt", "end_id": "CoC-global_enterprise", "type": "cct-coc" },
+    { "source": "CCT-biz_dev", "target": "CoC-home", "start_id": "CCT-biz_dev", "end_id": "CoC-home", "type": "cct-coc" },
+    { "source": "CCT-NEATO", "target": "CoC-engineering", "start_id": "CCT-NEATO", "end_id": "CoC-engineering", "type": "cct-coc" },
+    { "source": "CCT-NEATO", "target": "CoC-home", "start_id": "CCT-NEATO", "end_id": "CoC-home", "type": "cct-coc" },
+    { "source": "CCT-customer_service", "target": "CoC-engineering", "start_id": "CCT-customer_service", "end_id": "CoC-engineering", "type": "cct-coc" },
+    { "source": "CCT-customer_service", "target": "CoC-home", "start_id": "CCT-customer_service", "end_id": "CoC-home", "type": "cct-coc" }
+  ]
+}
